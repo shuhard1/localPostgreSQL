@@ -35,7 +35,7 @@ func (*repository) Delete(ctx context.Context, id string) error {
 
 // FindAll implements author.Repository
 func (r *repository) FindAll(ctx context.Context) (u []author.Author, err error) {
-	q := `SELECT id, name FROM public.author;`
+	q := `SELECT info ->> 'payment' AS payment FROM customers;`
 
 	rows, err := r.client.Query(ctx, q)
 	if err != nil {
@@ -49,7 +49,7 @@ func (r *repository) FindAll(ctx context.Context) (u []author.Author, err error)
 		var ath author.Author
 
 		//записывает в структуру данные из БД
-		err = rows.Scan(&ath.ID, &ath.Name)
+		err = rows.Scan(&ath.Name)
 		if err != nil {
 			return nil, err
 		}
