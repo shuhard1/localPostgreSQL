@@ -3,14 +3,10 @@ package postgresql
 import (
 	"context"
 	"fmt"
-	"log"
-	"time"
-
-	"localPostgreSQL/pkg/utils"
+	"os"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type Client interface {
@@ -20,23 +16,13 @@ type Client interface {
 	Begin(ctx context.Context) (pgx.Tx, error)
 }
 
-func NewClient(ctx context.Context, maxAttempts int, username, password, host, port, database string) (pool *pgxpool.Pool, err error) {
-	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", username, password, host, port, database)
-	err = utils.DoWithTries(func() error {
-		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-		defer cancel()
-
-		pool, err = pgxpool.Connect(ctx, dsn)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	}, maxAttempts, 5*time.Second)
-
+func NewClient() (c *pgx.Conn) {
+	//postgres://postgres:shuhard6k@localhost:5432/postgres
+	dsn := "postgres://postgres:shuhard6k@localhost:5432/postgres"
+	conn, err := pgx.Connect(context.Background(), dsn)
 	if err != nil {
-		log.Fatal("error do with tries postgresql")
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
 	}
-
-	return pool, nil
+	return conn
 }
