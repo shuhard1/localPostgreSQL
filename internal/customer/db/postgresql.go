@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgconn"
-	"github.com/shuhard1/localPostgreSQL/internal/author"
+	customer "github.com/shuhard1/localPostgreSQL/internal/customer"
 	"github.com/shuhard1/localPostgreSQL/pkg/client/postgresql"
 )
 
@@ -14,10 +14,10 @@ type repository struct {
 }
 
 // Create implements author.Repository
-func (r *repository) Create(ctx context.Context, author *author.Author) error {
+func (r *repository) Create(ctx context.Context, customer *customer.Customer) error {
 	q := `INSERT INTO author (name) VALUES ($1) RETURNING id`
 
-	err := r.client.QueryRow(ctx, q, author.Name).Scan(&author.ID)
+	err := r.client.QueryRow(ctx, q, customer.Info).Scan(&customer.ID)
 	if err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
 			newErr := fmt.Errorf(fmt.Sprintf("SQL Error: %s, Detail: %s, Where: %s, Code: %s, SQLState: %s", pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.Code, pgErr.SQLState()))
@@ -34,7 +34,7 @@ func (*repository) Delete(ctx context.Context, id string) error {
 }
 
 // FindAll implements author.Repository
-func (r *repository) FindAll(ctx context.Context) (u []author.Author, err error) {
+func (r *repository) FindAll(ctx context.Context) (u []customer.Customer, err error) {
 	q := `SELECT info ->> 'payment' AS payment FROM customers;`
 
 	rows, err := r.client.Query(ctx, q)
@@ -42,14 +42,14 @@ func (r *repository) FindAll(ctx context.Context) (u []author.Author, err error)
 		return nil, err
 	}
 
-	authors := make([]author.Author, 0)
+	authors := make([]customer.Customer, 0)
 
 	//проходится по рядам в таблице
 	for rows.Next() {
-		var ath author.Author
+		var ath customer.Customer
 
 		//записывает в структуру данные из БД
-		err = rows.Scan(&ath.Name)
+		err = rows.Scan(&ath.Info)
 		if err != nil {
 			return nil, err
 		}
@@ -65,24 +65,24 @@ func (r *repository) FindAll(ctx context.Context) (u []author.Author, err error)
 }
 
 // FindOne implements author.Repository
-func (r *repository) FindOne(ctx context.Context, id string) (author.Author, error) {
+func (r *repository) FindOne(ctx context.Context, id string) (customer.Customer, error) {
 	q := `SELECT id, name FROM customers WHERE id = $1`
 
-	var ath author.Author
-	err := r.client.QueryRow(ctx, q, id).Scan(&ath.ID, &ath.Name)
+	var ath customer.Customer
+	err := r.client.QueryRow(ctx, q, id).Scan(&ath.ID, &ath.Info)
 	if err != nil {
-		return author.Author{}, err
+		return customer.Customer{}, err
 	}
 
 	return ath, nil
 }
 
 // Update implements author.Repository
-func (*repository) Update(ctx context.Context, user author.Author) error {
+func (*repository) Update(ctx context.Context, user customer.Customer) error {
 	panic("unimplemented")
 }
 
-func NewRepository(client postgresql.Client) author.Repository {
+func NewRepository(client postgresql.Client) customer.Repository {
 	return &repository{
 		client: client,
 	}

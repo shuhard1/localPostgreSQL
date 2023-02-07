@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/shuhard1/localPostgreSQL/internal/author/db"
+	"github.com/shuhard1/localPostgreSQL/internal/customer/db"
 	"github.com/shuhard1/localPostgreSQL/pkg/client/postgresql"
 )
 
