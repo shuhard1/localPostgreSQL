@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgconn"
-	customer "github.com/shuhard1/localPostgreSQL/internal/customer"
+	"github.com/shuhard1/localPostgreSQL/internal/order"
 	"github.com/shuhard1/localPostgreSQL/pkg/client/postgresql"
 )
 
@@ -14,7 +14,7 @@ type repository struct {
 }
 
 // Create implements author.Repository
-func (r *repository) Create(ctx context.Context, customer *customer.Customer) error {
+func (r *repository) Create(ctx context.Context, customer *order.Order) error {
 	q := `INSERT INTO author (name) VALUES ($1) RETURNING id`
 
 	err := r.client.QueryRow(ctx, q, customer.Info).Scan(&customer.ID)
@@ -34,22 +34,22 @@ func (*repository) Delete(ctx context.Context, id string) error {
 }
 
 // FindAll implements author.Repository
-func (r *repository) FindAll(ctx context.Context) (u []customer.Customer, err error) {
-	q := `SELECT info ->> 'payment' AS payment FROM customers;`
+func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
+	q := `SELECT id, info ->> 'payment' AS payment FROM orders;`
 
 	rows, err := r.client.Query(ctx, q)
 	if err != nil {
 		return nil, err
 	}
 
-	authors := make([]customer.Customer, 0)
+	authors := make([]order.Order, 0)
 
 	//проходится по рядам в таблице
 	for rows.Next() {
-		var ath customer.Customer
+		var ath order.Order
 
 		//записывает в структуру данные из БД
-		err = rows.Scan(&ath.Info)
+		err = rows.Scan(&ath.Info, &ath.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -65,24 +65,24 @@ func (r *repository) FindAll(ctx context.Context) (u []customer.Customer, err er
 }
 
 // FindOne implements author.Repository
-func (r *repository) FindOne(ctx context.Context, id string) (customer.Customer, error) {
+func (r *repository) FindOne(ctx context.Context, id string) (order.Order, error) {
 	q := `SELECT id, name FROM customers WHERE id = $1`
 
-	var ath customer.Customer
+	var ath order.Order
 	err := r.client.QueryRow(ctx, q, id).Scan(&ath.ID, &ath.Info)
 	if err != nil {
-		return customer.Customer{}, err
+		return order.Order{}, err
 	}
 
 	return ath, nil
 }
 
 // Update implements author.Repository
-func (*repository) Update(ctx context.Context, user customer.Customer) error {
+func (*repository) Update(ctx context.Context, user order.Order) error {
 	panic("unimplemented")
 }
 
-func NewRepository(client postgresql.Client) customer.Repository {
+func NewRepository(client postgresql.Client) order.Repository {
 	return &repository{
 		client: client,
 	}

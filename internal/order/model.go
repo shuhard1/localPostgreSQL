@@ -1,6 +1,6 @@
-package customer
+package order
 
-type Customer struct {
+type Order struct {
 	ID   string `json:"id"`
 	Info string `json:"info"`
 }
