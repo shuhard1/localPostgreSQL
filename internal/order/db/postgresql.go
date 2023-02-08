@@ -35,7 +35,7 @@ func (*repository) Delete(ctx context.Context, id string) error {
 
 // FindAll implements author.Repository
 func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
-	q := `SELECT id, info ->> 'payment' AS payment FROM orders;`
+	q := `SELECT id, info FROM orders;`
 
 	rows, err := r.client.Query(ctx, q)
 	if err != nil {
@@ -49,7 +49,7 @@ func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
 		var ath order.Order
 
 		//записывает в структуру данные из БД
-		err = rows.Scan(&ath.Info, &ath.ID)
+		err = rows.Scan(&ath.ID, &ath.Info)
 		if err != nil {
 			return nil, err
 		}
@@ -66,7 +66,8 @@ func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
 
 // FindOne implements author.Repository
 func (r *repository) FindOne(ctx context.Context, id string) (order.Order, error) {
-	q := `SELECT id, name FROM customers WHERE id = $1`
+
+	q := `SELECT id, info FROM orders WHERE id = $1`
 
 	var ath order.Order
 	err := r.client.QueryRow(ctx, q, id).Scan(&ath.ID, &ath.Info)
