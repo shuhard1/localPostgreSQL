@@ -17,7 +17,6 @@ type Client interface {
 }
 
 func NewClient() (c *pgx.Conn) {
-	//postgres://postgres:shuhard6k@localhost:5432/postgres
 	dsn := "postgres://postgres:shuhard6k@localhost:5432/postgres"
 	conn, err := pgx.Connect(context.Background(), dsn)
 	if err != nil {

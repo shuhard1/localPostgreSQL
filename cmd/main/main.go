@@ -2,27 +2,39 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"log"
 
-	"github.com/gin-gonic/gin"
+	stan "github.com/nats-io/stan.go"
 	"github.com/shuhard1/localPostgreSQL/internal/order/db"
+
 	"github.com/shuhard1/localPostgreSQL/pkg/client/postgresql"
+	"github.com/shuhard1/localPostgreSQL/pkg/handler"
+	"github.com/shuhard1/localPostgreSQL/pkg/natsStreaming"
 )
 
 func main() {
+	sc, _ := stan.Connect("test-cluster", "1")
+	defer sc.Close()
+
 	conn := postgresql.NewClient()
 	defer conn.Close(context.Background())
 
-	repository := db.NewRepository(conn)
+	var h handler.Handler
+	h.Repositry = db.NewRepository(conn)
 
-	server := gin.Default()
-	server.GET("/", func(ctx *gin.Context) {
-		id := ctx.Request.URL.Query().Get("id")
-		order, err := repository.FindOne(context.Background(), id)
+	sc.Subscribe("foo", func(m *stan.Msg) {
+		var dat natsStreaming.Order
+		err := json.Unmarshal(m.Data, &dat)
 		if err != nil {
-			fmt.Fprintf(ctx.Writer, "QueryRow failed: %v\n", err)
+			log.Fatalf("unmarshal error: %s\n", err.Error())
 		}
-		ctx.JSON(200, order.Info)
+		info, _ := json.Marshal(dat)
+		fmt.Println(dat.Order_uid)
+		fmt.Println(string(info))
+		h.Repositry.Create(context.Background(), dat.Order_uid, string(info))
 	})
-	server.Run(":8080")
+
+	h.InitRouter()
 }

@@ -14,10 +14,10 @@ type repository struct {
 }
 
 // Create implements author.Repository
-func (r *repository) Create(ctx context.Context, customer *order.Order) error {
-	q := `INSERT INTO author (name) VALUES ($1) RETURNING id`
+func (r *repository) Create(ctx context.Context, id string, info string) error {
+	q := `INSERT INTO orders (id, info) VALUES ($1, $2) RETURNING id`
 
-	err := r.client.QueryRow(ctx, q, customer.Info).Scan(&customer.ID)
+	err := r.client.QueryRow(ctx, q, id, info).Scan()
 	if err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
 			newErr := fmt.Errorf(fmt.Sprintf("SQL Error: %s, Detail: %s, Where: %s, Code: %s, SQLState: %s", pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.Code, pgErr.SQLState()))
