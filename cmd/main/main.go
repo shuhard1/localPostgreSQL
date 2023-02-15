@@ -5,16 +5,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	stan "github.com/nats-io/stan.go"
 	"github.com/shuhard1/localPostgreSQL/internal/order/db"
 
+	"github.com/shuhard1/localPostgreSQL/internal/natsStreaming"
+	"github.com/shuhard1/localPostgreSQL/pkg/cache"
 	"github.com/shuhard1/localPostgreSQL/pkg/client/postgresql"
 	"github.com/shuhard1/localPostgreSQL/pkg/handler"
-	"github.com/shuhard1/localPostgreSQL/pkg/natsStreaming"
 )
 
 func main() {
+	cache := cache.New(5*time.Minute, 10*time.Minute)
+	cache.Get("")
 	sc, _ := stan.Connect("test-cluster", "1")
 	defer sc.Close()
 
@@ -36,5 +40,5 @@ func main() {
 		h.Repositry.Create(context.Background(), dat.Order_uid, string(info))
 	})
 
-	h.InitRouter()
+	h.InitRouter(cache)
 }
