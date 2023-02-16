@@ -34,7 +34,7 @@ func (h *Handler) InitRouter(c *cache.Cache) *gin.Engine {
 			if err != nil {
 				fmt.Fprintf(ctx.Writer, "FindOne failed: %v\n", err)
 			} else {
-				c.Set(ord.ID, ord.Info, 5*time.Minute)
+				c.Set(ord.ID, ord.Info, 10*time.Minute)
 			}
 		}
 		var dat natsStreaming.Order

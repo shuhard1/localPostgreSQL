@@ -42,7 +42,7 @@ func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
 		return nil, err
 	}
 
-	authors := make([]order.Order, 0)
+	orders := make([]order.Order, 0)
 
 	//проходится по рядам в таблице
 	for rows.Next() {
@@ -54,14 +54,14 @@ func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
 			return nil, err
 		}
 
-		authors = append(authors, ath)
+		orders = append(orders, ath)
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return authors, nil
+	return orders, nil
 }
 
 // FindOne implements author.Repository

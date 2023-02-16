@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	stan "github.com/nats-io/stan.go"
 )
 
@@ -59,9 +57,4 @@ func main() {
 	sc, _ := stan.Connect("test-cluster", "2")
 	defer sc.Close()
 	sc.Publish("foo", jsonDataBytes)
-
-	for i := 0; ; i++ {
-		//sc.Publish("foo", jsonDataBytes)
-		time.Sleep(time.Second * 2)
-	}
 }
