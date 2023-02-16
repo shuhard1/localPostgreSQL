@@ -24,8 +24,7 @@ table, th, td {
   </tr>
   <tr>
     <td>delivery</td>
-    <td>{{range  .Delivery }}</td>
-	{{ end }}
+    <td>{{ .Delivery }}</td>
   </tr>
   <tr>
     <td>payment</td>
