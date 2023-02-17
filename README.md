@@ -20,7 +20,7 @@
    ``` cd localPostgreSQL/cmd/producer```<br/>
    ``` go run producer.go```
    
-6. http://localhost:8080/?id=f478kekjh9h3d12345678<br/><br/>
+6. http://localhost:8080/?id=f478kekjh9h3d12345678<br/>
 ### Technologies:
 - Golang
 - Gin
