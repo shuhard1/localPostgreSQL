@@ -3,7 +3,7 @@
 ## Start instructions
 
 1.
-   ``` create table orders (id text, info json)```
+   ``` create table orders (id text NOT NULL UNIQUE, info json NOT NULL)```
    
 2.
    ``` git clone https://github.com/shuhard1/localPostgreSQL.git```
