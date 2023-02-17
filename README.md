@@ -21,6 +21,9 @@
    ``` go run producer.go```
    
 6. http://localhost:8080/?id=f478kekjh9h3d12345678<br/>
+   http://localhost:8080/?id=abcd8kekjh123412341234<br/>
+   http://localhost:8080/?id=b563feb7b2b84b6test<br/>
+   
 ### Technologies:
 - Golang
 - Gin
