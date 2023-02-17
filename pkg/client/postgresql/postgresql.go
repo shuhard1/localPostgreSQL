@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
+	"github.com/shuhard1/localPostgreSQL/internal/config"
 )
 
 type Client interface {
@@ -16,8 +17,8 @@ type Client interface {
 	Begin(ctx context.Context) (pgx.Tx, error)
 }
 
-func NewClient() (c *pgx.Conn) {
-	dsn := "postgres://postgres:shuhard6k@localhost:5432/postgres"
+func NewClient(sc config.StorageConfig) (c *pgx.Conn) {
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", sc.Username, sc.Password, sc.Host, sc.Port, sc.Database)
 	conn, err := pgx.Connect(context.Background(), dsn)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)

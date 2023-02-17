@@ -24,15 +24,43 @@ table, th, td {
   </tr>
   <tr>
     <td>delivery</td>
-    <td>{{ .Delivery }}</td>
+    <td>Name: {{ .Delivery.Name }} <br> 
+    Phone: {{ .Delivery.Phone }}<br> 
+    Zip: {{ .Delivery.Zip }}<br>
+    City: {{ .Delivery.City }}<br>
+    Address: {{ .Delivery.Address }}<br>
+    Region: {{ .Delivery.Region }}<br>
+    Email: {{ .Delivery.Email }}<br></td>
   </tr>
   <tr>
     <td>payment</td>
-    <td>{{ .Payment }}</td>
+    <td>Transaction: {{ .Payment.Transaction }} <br> 
+    Request_id: {{ .Payment.Request_id }}<br> 
+    Currency: {{ .Payment.Currency }}<br>
+    Provider: {{ .Payment.Provider }}<br>
+    Amount: {{ .Payment.Amount }}<br>
+    Payment_dt: {{ .Payment.Payment_dt }}<br>
+    Bank: {{ .Payment.Bank }}<br>
+    Delivery_cost: {{ .Payment.Delivery_cost }}<br>
+    Goods_total: {{ .Payment.Goods_total }}<br>
+    Custom_fee: {{ .Payment.Custom_fee }}<br>
+	</td>
   </tr>
   <tr>
     <td>items</td>
-    <td>{{ .Items }}</td>
+    <td>{{range .Items}}
+    Chrt_id: {{ .Chrt_id }}<br> 
+    Track_number: {{ .Track_number }}<br>
+    Price: {{ .Price }}<br>
+    Rid: {{ .Rid }}<br>
+    Name: {{ .Name }}<br>
+    Sale: {{ .Sale }}<br>
+    Size: {{ .Size }}<br>
+    Total_price: {{ .Total_price }}<br>
+    Nm_id: {{ .Nm_id }}<br>
+    Brand: {{ .Brand }}<br>
+    Status: {{ .Status }}<br>
+	  {{end}}</td>
   </tr>
   <tr>
     <td>locale</td>

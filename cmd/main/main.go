@@ -7,6 +7,7 @@ import (
 	"time"
 
 	stan "github.com/nats-io/stan.go"
+	"github.com/shuhard1/localPostgreSQL/internal/config"
 	"github.com/shuhard1/localPostgreSQL/internal/order/db"
 
 	"github.com/shuhard1/localPostgreSQL/internal/natsStreaming"
@@ -20,7 +21,7 @@ func main() {
 	sc, _ := stan.Connect("test-cluster", "1")
 	defer sc.Close()
 
-	conn := postgresql.NewClient()
+	conn := postgresql.NewClient(*config.GetConfig())
 	defer conn.Close(context.Background())
 
 	var h handler.Handler
@@ -39,7 +40,7 @@ func main() {
 		var dat natsStreaming.Order
 		err := json.Unmarshal(m.Data, &dat)
 		if err != nil {
-			fmt.Printf("unmarshal error: %s\n", err)
+			fmt.Printf("unmarshal error1: %s\n", err)
 		}
 		info, _ := json.Marshal(dat)
 		h.Repositry.Create(context.Background(), dat.Order_uid, string(info))

@@ -38,12 +38,13 @@ func (h *Handler) InitRouter(c *cache.Cache) *gin.Engine {
 			}
 		}
 		var dat natsStreaming.Order
+		dat.Items = make([]natsStreaming.Items, 0)
 		err := json.Unmarshal([]byte(ord.Info), &dat)
 		if err != nil {
 			fmt.Fprintf(ctx.Writer, "unmarshal error: %s\n", err)
 		}
 		if err := index.Execute(ctx.Writer, dat); err != nil {
-			fmt.Fprintf(ctx.Writer, "index.Execute error: %s\n", err)
+			fmt.Printf("index.Execute error: %s\n", err)
 		}
 	})
 	router.Run(":8080")
