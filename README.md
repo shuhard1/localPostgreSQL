@@ -5,13 +5,13 @@
 1.
    ``` git clone https://github.com/shuhard1/localPostgreSQL.git```
 2. 
-   ``` cd $GOPATH/src/github.com/nats-io/nats-streaming-server```
+   ``` cd $GOPATH/src/github.com/nats-io/nats-streaming-server```<br/>
    ``` go run nats-streaming-server.go```
 3.
-   ``` cd localPostgreSQL/cmd/main```
+   ``` cd localPostgreSQL/cmd/main```<br/>
    ``` go run main.go```
 4. 
-   ``` cd localPostgreSQL/cmd/producer```
+   ``` cd localPostgreSQL/cmd/producer```<br/>
    ``` go run producer.go```
 
 ### Technologies:
