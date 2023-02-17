@@ -40,7 +40,7 @@ func main() {
 		var dat natsStreaming.Order
 		err := json.Unmarshal(m.Data, &dat)
 		if err != nil {
-			fmt.Printf("unmarshal error1: %s\n", err)
+			fmt.Printf("unmarshal error: %s\n", err)
 		}
 		info, _ := json.Marshal(dat)
 		h.Repositry.Create(context.Background(), dat.Order_uid, string(info))

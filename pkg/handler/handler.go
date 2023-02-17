@@ -26,9 +26,12 @@ func (h *Handler) InitRouter(c *cache.Cache) *gin.Engine {
 	router := gin.Default()
 	router.GET("/", func(ctx *gin.Context) {
 		id := ctx.Request.URL.Query().Get("id")
+
 		item, found := c.Get(id)
 		info := fmt.Sprintf("%v", item)
+
 		ord := order.Order{Info: info, ID: id}
+
 		if !found {
 			ord, err = h.Repositry.FindOne(context.Background(), id)
 			if err != nil {
@@ -39,6 +42,7 @@ func (h *Handler) InitRouter(c *cache.Cache) *gin.Engine {
 		}
 		var dat natsStreaming.Order
 		dat.Items = make([]natsStreaming.Items, 0)
+
 		err := json.Unmarshal([]byte(ord.Info), &dat)
 		if err != nil {
 			fmt.Fprintf(ctx.Writer, "unmarshal error: %s\n", err)

@@ -13,7 +13,6 @@ type repository struct {
 	client postgresql.Client
 }
 
-// Create implements author.Repository
 func (r *repository) Create(ctx context.Context, id string, info string) error {
 	q := `INSERT INTO orders (id, info) VALUES ($1, $2) RETURNING id`
 
@@ -28,12 +27,6 @@ func (r *repository) Create(ctx context.Context, id string, info string) error {
 	return nil
 }
 
-// Delete implements author.Repository
-func (*repository) Delete(ctx context.Context, id string) error {
-	panic("unimplemented")
-}
-
-// FindAll implements author.Repository
 func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
 	q := `SELECT id, info FROM orders;`
 
@@ -44,11 +37,9 @@ func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
 
 	orders := make([]order.Order, 0)
 
-	//проходится по рядам в таблице
 	for rows.Next() {
 		var ath order.Order
 
-		//записывает в структуру данные из БД
 		err = rows.Scan(&ath.ID, &ath.Info)
 		if err != nil {
 			return nil, err
@@ -64,7 +55,6 @@ func (r *repository) FindAll(ctx context.Context) (u []order.Order, err error) {
 	return orders, nil
 }
 
-// FindOne implements author.Repository
 func (r *repository) FindOne(ctx context.Context, id string) (order.Order, error) {
 
 	q := `SELECT id, info FROM orders WHERE id = $1`
@@ -76,11 +66,6 @@ func (r *repository) FindOne(ctx context.Context, id string) (order.Order, error
 	}
 
 	return ath, nil
-}
-
-// Update implements author.Repository
-func (*repository) Update(ctx context.Context, user order.Order) error {
-	panic("unimplemented")
 }
 
 func NewRepository(client postgresql.Client) order.Repository {

@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-// Cache struct cache
 type Cache struct {
 	sync.RWMutex
 	items             map[string]Item
@@ -15,19 +14,16 @@ type Cache struct {
 	cleanupInterval   time.Duration
 }
 
-// Item struct cache item
 type Item struct {
 	Value      interface{}
 	Expiration int64
 	Created    time.Time
 }
 
-// New. Initializing a new memory cache
 func New(defaultExpiration, cleanupInterval time.Duration) *Cache {
 
 	items := make(map[string]Item)
 
-	// cache item
 	cache := Cache{
 		items:             items,
 		defaultExpiration: defaultExpiration,
@@ -41,7 +37,6 @@ func New(defaultExpiration, cleanupInterval time.Duration) *Cache {
 	return &cache
 }
 
-// Set setting a cache by key
 func (c *Cache) Set(key string, value interface{}, duration time.Duration) {
 
 	var expiration int64
@@ -66,7 +61,6 @@ func (c *Cache) Set(key string, value interface{}, duration time.Duration) {
 
 }
 
-// Get getting a cache by key
 func (c *Cache) Get(key string) (interface{}, bool) {
 
 	c.RLock()
@@ -75,14 +69,12 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 
 	item, found := c.items[key]
 
-	// cache not found
 	if !found {
 		return nil, false
 	}
 
 	if item.Expiration > 0 {
 
-		// cache expired
 		if time.Now().UnixNano() > item.Expiration {
 			return nil, false
 		}
@@ -92,8 +84,6 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 	return item.Value, true
 }
 
-// Delete cache by key
-// Return false if key not found
 func (c *Cache) Delete(key string) error {
 
 	c.Lock()
@@ -109,12 +99,10 @@ func (c *Cache) Delete(key string) error {
 	return nil
 }
 
-// StartGC start Garbage Collection
 func (c *Cache) StartGC() {
 	go c.GC()
 }
 
-// GC Garbage Collection
 func (c *Cache) GC() {
 
 	for {
@@ -134,7 +122,6 @@ func (c *Cache) GC() {
 
 }
 
-// expiredKeys returns key list which are expired.
 func (c *Cache) expiredKeys() (keys []string) {
 
 	c.RLock()
@@ -150,7 +137,6 @@ func (c *Cache) expiredKeys() (keys []string) {
 	return
 }
 
-// clearItems removes all the items which key in keys.
 func (c *Cache) clearItems(keys []string) {
 
 	c.Lock()

@@ -54,7 +54,9 @@ func main() {
 		"date_created": "2023-11-26T06:22:19Z",
 		"oof_shard": "2"
 	  }`)
+
 	sc, _ := stan.Connect("test-cluster", "2")
 	defer sc.Close()
+
 	sc.Publish("foo", jsonDataBytes)
 }
